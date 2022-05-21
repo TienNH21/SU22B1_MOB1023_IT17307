@@ -5,11 +5,48 @@
  */
 package buoi5_swing2;
 
+import buoi2_lt1.Nguoi;
+import buoi2_lt1.NguoiDAOInterface;
+import buoi2_lt1.QuanLyDanhSach;
+import buoi2_lt1.SinhVien;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 public class QLSVForm extends javax.swing.JFrame {
+    private NguoiDAOInterface qlds;
 
     public QLSVForm() {
         initComponents();
         this.clearForm();
+        this.qlds = new QuanLyDanhSach();
+        
+        this.qlds.insert(new SinhVien("PH1", "UDPM", "Ng Van A", 1, "HN"));
+        this.qlds.insert(new SinhVien("PH2", "TKTW", "Ng Thi B", 0, "ND"));
+        this.qlds.insert(new SinhVien("PH3", "LTMT", "Ng Van C", 1, "HP"));
+        this.hienThiTable();
+    }
+    
+    private void hienThiTable()
+    {
+        DefaultTableModel dtm = (DefaultTableModel) this.tblSV.getModel();
+        dtm.setRowCount(0);
+        
+        ArrayList<Nguoi> ds = this.qlds.getList();
+        
+        for (Nguoi nguoi: ds) {
+            SinhVien sv = (SinhVien) nguoi;
+            
+            Object[] rowData = {
+                sv.getMaSv(),
+                sv.getHoTen(),
+                sv.getGioiTinh() == 1 ? "Nam" : "Nữ",
+                sv.getDiaChi(),
+                sv.getChuyenNganh(),
+            };
+            
+            dtm.addRow(rowData);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -38,7 +75,7 @@ public class QLSVForm extends javax.swing.JFrame {
         btnThoat = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblSV = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -63,10 +100,25 @@ public class QLSVForm extends javax.swing.JFrame {
         rdoNu.setText("Nữ");
 
         btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
         btnSua.setText("Sửa");
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuaActionPerformed(evt);
+            }
+        });
 
         btnXoa.setText("Xóa");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
 
         btnXoaForm.setText("Xóa form");
         btnXoaForm.addActionListener(new java.awt.event.ActionListener() {
@@ -80,6 +132,11 @@ public class QLSVForm extends javax.swing.JFrame {
         btnGhi.setText("Ghi");
 
         btnThoat.setText("Thoát");
+        btnThoat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThoatActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -139,11 +196,12 @@ public class QLSVForm extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(txtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
-                    .addComponent(txtMaSV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbbCNganh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(txtMaSV, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbbCNganh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -163,7 +221,7 @@ public class QLSVForm extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblSV.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -186,7 +244,12 @@ public class QLSVForm extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        tblSV.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblSVMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblSV);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -233,6 +296,100 @@ public class QLSVForm extends javax.swing.JFrame {
         clearForm();
     }//GEN-LAST:event_btnXoaFormActionPerformed
 
+    private void tblSVMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSVMouseClicked
+        int row = this.tblSV.getSelectedRow();
+        
+        if (row == -1) {
+            return ;
+        }
+        
+        String maSV = this.tblSV.getValueAt(row, 0).toString();
+        String hoTen = this.tblSV.getValueAt(row, 1).toString();
+        String gt = this.tblSV.getValueAt(row, 2).toString();
+        String diaChi = this.tblSV.getValueAt(row, 3).toString();
+        String cNganh = this.tblSV.getValueAt(row, 4).toString();
+        
+        this.txtHoTen.setText(hoTen);
+        this.txtMaSV.setText(maSV);
+        this.txtDiaChi.setText(diaChi);
+        this.cbbCNganh.setSelectedItem(cNganh);
+        
+        if (gt.equals("Nam")) {
+            this.rdoNam.setSelected(true);
+        } else {
+            this.rdoNu.setSelected(true);
+        }
+    }//GEN-LAST:event_tblSVMouseClicked
+
+    private void btnThoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThoatActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnThoatActionPerformed
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        int row = this.tblSV.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Hãy chọn 1 dòng trên Table");
+            return ;
+        }
+        
+        this.qlds.delete(row);
+        this.hienThiTable();
+        this.clearForm();
+    }//GEN-LAST:event_btnXoaActionPerformed
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        SinhVien sv = this.getFormData();
+        if (sv == null) {
+            return  ;
+        }
+        
+        this.qlds.insert(sv);
+        this.hienThiTable();
+        this.clearForm();
+        JOptionPane.showMessageDialog(this, "Thêm thành công");
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
+        int row = this.tblSV.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Chọn 1 dòng trên Table");
+            return ;
+        }
+        
+        SinhVien sv = this.getFormData();
+        if (sv == null) {
+            return ;
+        }
+        
+        this.qlds.update(sv, row);
+        this.hienThiTable();
+        this.clearForm();
+        JOptionPane.showMessageDialog(this, "Sửa thành công");
+    }//GEN-LAST:event_btnSuaActionPerformed
+
+    private SinhVien getFormData()
+    {
+        String hoTen = this.txtHoTen.getText();
+        String maSV = this.txtMaSV.getText();
+        String diaChi = this.txtDiaChi.getText();
+        
+        int gioiTinh = this.rdoNam.isSelected() ? 1 : 0;
+        String cNganh = this.cbbCNganh.getSelectedItem().toString();
+        
+        if (
+            hoTen.trim().length() == 0 ||
+            maSV.trim().length() == 0 ||
+            diaChi.trim().length() == 0
+        ) {
+            JOptionPane.showMessageDialog(this, "Không được để trống");
+            return null;
+        }
+        
+        SinhVien sv = new SinhVien(maSV, cNganh, hoTen, gioiTinh, diaChi);
+        
+        return sv;
+    }
+    
     private void clearForm()
     {
         this.txtHoTen.setText("");
@@ -292,9 +449,9 @@ public class QLSVForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JRadioButton rdoNam;
     private javax.swing.JRadioButton rdoNu;
+    private javax.swing.JTable tblSV;
     private javax.swing.JTextField txtDiaChi;
     private javax.swing.JTextField txtHoTen;
     private javax.swing.JTextField txtMaSV;
