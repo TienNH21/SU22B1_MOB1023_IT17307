@@ -1,6 +1,8 @@
 package buoi2_lt1;
 
-public class SinhVien extends Nguoi {
+import java.io.Serializable;
+
+public class SinhVien extends Nguoi implements Serializable {
     private String maSv;
     private String chuyenNganh;
 
