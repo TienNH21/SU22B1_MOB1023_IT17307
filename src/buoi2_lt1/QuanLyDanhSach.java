@@ -33,4 +33,9 @@ public class QuanLyDanhSach implements NguoiDAOInterface {
     public Nguoi getById(int i) {
         return this.ds.get(i);
     }
+
+    @Override
+    public void setList(ArrayList<Nguoi> ds) {
+        this.ds = ds;
+    }
 }

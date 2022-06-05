@@ -7,5 +7,6 @@ public interface NguoiDAOInterface {
     public void update(Nguoi n, int i);
     public void delete(int i);
     public ArrayList<Nguoi> getList();
+    public void setList(ArrayList<Nguoi> ds);
     public Nguoi getById(int i);
 }

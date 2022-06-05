@@ -262,11 +262,17 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="&#x110;&#x1ecd;c"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDocActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnGhi">
           <Properties>
             <Property name="text" type="java.lang.String" value="Ghi"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGhiActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnThoat">
           <Properties>
